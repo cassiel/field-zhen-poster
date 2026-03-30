@@ -1,0 +1,10 @@
+*.aux
+*.bcf
+*.log
+*.out
+*.pdf
+*.bbl
+*.blg
+*.run.xml
+*.synctex.gz
+.DS_Store
