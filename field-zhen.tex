@@ -2,6 +2,8 @@
 
 \usepackage[style=acmnumeric]{biblatex}
 \usepackage{CJKutf8}
+\usepackage{graphicx}
+
 \addbibresource{references.bib}
 
 \AtBeginDocument{%
@@ -33,7 +35,7 @@
   \maketitle
 
 \begin{quote}
-\fz{} is a contemporary dance work for stage blending English and Taiwanese folk dance, music, and storytelling with AI, projection, and motion tracking to reimagine myth and ritual as joyful, embodied visions of our shared future.
+\fz{} is a contemporary dance work for stage blending English and Taiwanese folk dance, music, and storytelling with AI, projection, and motion tracking to re-imagine myth and ritual as joyful, embodied visions of our shared future.
 \end{quote}
 
 \section{Introduction}
@@ -54,7 +56,14 @@ The sound score is realised using off-the-shelf commercial software instruments 
 
 The AI system generates tracking and gestural data in the form of OSC messages, which are again continuous values, normalised as either unipolar (0.0..1.0) or bipolar (-1.0..1.0) ranges. At the very least, the mapping system needs to convert these OSC messages into MIDI, but a direct linear mapping is unlikely to be satisfactory---at the very least, values need to be scaled. There will be many more OSC inputs than MIDI destinations, requiring some routing functionality and possibly nodes which combine multiple OSC sources to affect one MIDI destination. And the entire mapping system needs to be able to transform gradually from one setup to another as scenes shift in the performance, with no perceptable discontinuities.
 
-We take as inspiration the Metasurface in the composition/performance environment AudioMulch\cite{bencina_audiomulch_nodate}, which presents a two-dimensional Voronoi diagram which can be navigated by two independent normalised control values. The centre point of each cell in the diagram is a preset state encompassing the parameters of all the audio devices in the project. (More correctly, a user-defined subset of the parameters is controlled.) As the selection point moves around the diagram, the parameter values morph between nearby presets, weighted according to distance. As a simple example of how such a system might work in our context, consider a low-level AI mapping that tracks the body of a performer in two horizontal directions on stage. If these two parameters are mapped to the two dimenions of a Voronoi diagram, then different areas of the stage would become associated with different soundscapes, as the sound score instrumentation would be morphed between Voronoi cell presets. (To be clear, we are envisaging more complex mapping systems than this.)
+We take as inspiration the Metasurface in the composition/performance environment AudioMulch\cite{bencina_audiomulch_nodate}, which presents a two-dimensional Voronoi diagram which can be navigated by two independent normalised control values (figure \ref{fig:metasurface}). The centre point of each cell in the diagram is a preset state encompassing the parameters of all the audio devices in the project. (More correctly, a user-defined subset of the parameters is controlled.) As the selection point moves around the diagram, the parameter values morph between nearby presets, weighted according to distance. As a simple example of how such a system might work in our context, consider a low-level AI mapping that tracks the body of a performer in two horizontal directions on stage. If these two parameters are mapped to the two dimenions of a Voronoi diagram, then different areas of the stage would become associated with different soundscapes, as the sound score instrumentation would be morphed between Voronoi cell presets. (To be clear, we are envisaging more complex mapping systems than this.)
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/audiomulch2.png}
+    \caption{The AudioMulch Metasurface in Context}
+    \label{fig:metasurface}
+\end{figure}
 
 We indicated earlier that we differentiate between immediate ``live'' realtime control of the sound score (via incoming AI messages) and gradual morphing between scenes in the performance. To continue the analogy with AudioMulch, live control would correspond to navigation around the Voronoi space, while scene preset control would gradually transform the Voronoi space itself. This distinction is somewhat arbitrary, but feels like a sensible design decision in an attempt to make the system's behaviour as predictable and reproducible as possible.
 
@@ -78,6 +87,8 @@ Our system has OSC data coming in from the AI (from a different host via LAN), a
 
 
 \end{CJK*}
+
+%% \bibliographystyle{ACM-Reference-Format}
 
 \printbibliography
 
