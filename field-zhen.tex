@@ -65,6 +65,15 @@ We take as inspiration the Metasurface in the composition/performance environmen
     \label{fig:metasurface}
 \end{figure}
 
+This technique was also applied to an earlier work, Cosmoscope\cite{rothwell_3d_2025}, where a ClojureScript-based 3D animation system drove an LED lighting system inside a large metal sculpture. The preset animations were implemented as Clojure functions with parameters representing the position of an individual LED within the sculpture, and the passage of time. Each preset was positioned in the graphical ``cue plane'', while a cursor moved over it in response to automation cues (figure \ref{fig:cueplane}). Each preset function was also passed a normalised distance for its preset from the cursor, and would generally choose to interpret this as an indicator of brightness. (All active preset levels were summed prior to final rendering.) Additionally, preset functions were also passed a value representing the ``heading'' of the preset relative to the cursor, as a mechanism intended to add more visual interest to the preset changes, although this mechanism was not actually used in the final setup.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.50\linewidth]{images/cue-plane.png}
+    \caption{The Cue Plane for Cosmoscope}
+    \label{fig:cueplane}
+\end{figure}
+
 We indicated earlier that we differentiate between immediate ``live'' realtime control of the sound score (via incoming AI messages) and gradual morphing between scenes in the performance. To continue the analogy with AudioMulch, live control would correspond to navigation around the Voronoi space, while scene preset control would gradually transform the Voronoi space itself. This distinction is somewhat arbitrary, but feels like a sensible design decision in an attempt to make the system's behaviour as predictable and reproducible as possible.
 
 \section{Mapping and Hosting}
@@ -83,8 +92,32 @@ Our system has OSC data coming in from the AI (from a different host via LAN), a
 
 \noindent The downside of relying on Max for complex processing is that, viewed as a programming language, it handles complexity relatively badly. It is thus best used as a workbench for prototyping new parts of the system prior to them being ported into ClojureScript.
 
-[Max node]
+\section{Presets}
 
+The nascent system used in \fz{}, whilst largely implemented in ClojureScript, currently calls back into Max itself to make use of a user interface component called ``nodes''\cite{noauthor_nodes_nodate}. Like the cue plane mechanism in Cosmoscope, the nodes object provides proximity information with reference to a moving cursor. Whereas in Cosmoscope only a single proximity mapping is used (with the Cosmoscope cue plane holding multiple independent presets), in \fz{} each nodes instance is a single preset with multiple controllable parameters, which is more suited to dynamically shaping the musical component of a soundscape. (One of the parameters is likely to be overall amplitude.) The multiple nodes in the Max environment (figure \ref{fig:nodes}) correspond to multiple independent musical components in the score. Since the nodes interface is two-dimensional, each nodes instance can be attached to two normalised parameters from the motion-tracking AI system.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{images/nodes.jpg}
+    \caption{Max/MSP Nodes for Preset Control in \fz{}}
+    \label{fig:nodes}
+\end{figure}
+
+\section{Future Plans}
+
+The next development phase for \fz{} takes place in Taiwan in August 2026, leading to a work-in-progress presentation demonstrating the software systems (AI, visuals and music). Next technical steps include:
+
+\begin{itemize}
+
+  \item Migration away from Max/MSP as an active component in the mapping machinery, by implementing the mapping in ClojureScript and using Max/MSP purely as a visualiser and interface
+
+  \item Investigating whether it is useful to have the control areas in the nodes interface be controllable in real time (by the AI) as well as the cursor---in AudioMulch and Cosmoscope the ``terrain'' is completely static---or whether this literally introduces too many moving parts
+
+  \item Investigating whether the control areas can usefully be shapes other than circular
+
+  \item Implementing a data storage and retrieval system which supports gradual transition between scenes in the piece, where each scene establishes the layout of control areas and the mapping from AI to cursor
+
+\end{itemize}
 
 \end{CJK*}
 
