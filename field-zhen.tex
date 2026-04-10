@@ -32,84 +32,90 @@
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
 
+  \begin{abstract}
+    \fz{}, a collaboration between a UK-based and a Taiwanese dance company, incorporates elements of English folk dance with Taiwanese temple dance, and is staged in the context of a realtime AI system which tracks the movements of performers and analyses their gestures to influence projected visual and sonic elements of the performance, underpinning a digital ecosystem of generative media on stage. We describe some design decisions behind the generative sound score, and approaches taken to create a responsive and constantly evolving score played without breaks or discontinuites for the entire duration of the performance. This approach points to new, nonlinear techniques for composing digital media in the context of dance theatre, and gives a composer-programmer agency in the context of AI-mediated performance.
+  \end{abstract}
+
   \maketitle
 
-\begin{quote}
-\fz{} is a contemporary dance work for stage blending English and Taiwanese folk dance, music, and storytelling with AI, projection, and motion tracking to re-imagine myth and ritual as joyful, embodied visions of our shared future.
-\end{quote}
+  \section{Introduction}
 
-\section{Introduction}
+  \begin{quote}
+    \fz{} is a contemporary dance work for stage blending English and Taiwanese folk dance, music, and storytelling with AI, projection, and motion tracking to re-imagine myth and ritual as joyful, embodied visions of our shared future.
+  \end{quote}
 
-\fz{}, a folk/contemporary dance project co-devised by Pell Ensemble\cite{noauthor_rebecca_nodate} in the UK and Anarchy Dance Theatre\cite{noauthor_anarchy_nodate} in Taiwan, combines a conventional choreographic making process with motion capture, machine learning (AI), generative digital visuals and a generative sound score. The AI system generates motion capture data in real time from camera feeds of the action on stage, and also analyses the movement to determine higher-level gestural components and emotional intent. This poster is concerned with the design and implementation of a software system which generates an interactive sound score mediated by a continuous data feed from the AI.
+  \fz{}, a folk/contemporary dance project co-devised by Pell Ensemble\cite{noauthor_rebecca_nodate} in the UK and Anarchy Dance Theatre\cite{noauthor_anarchy_nodate} in Taiwan, combines a conventional choreographic making process with motion capture, machine learning (AI), generative digital visuals and a generative sound score. The AI system generates motion capture data in real time from camera feeds of the action on stage, and also analyses the movement to determine higher-level gestural components and emotional intent. This poster is concerned with the design and implementation of a software system which generates an interactive sound score mediated by a continuous data feed from the AI.
 
-\section{Motivation}
+  \section{Motivation}
 
-The use of AI is central to the creative focus and narrative of the work. The work's theme incorporates a machine/human relationship being explored and shared live with an audience, and this is manifested through the visuals and the sound score. The piece also explores and incorporates aspects of English folk dance and Taiwanese temple dance, both of these forms traditionally involving live musicians, and this aspect of the performance can be recontextualised as a dynamic, generative score created with electronic/software instruments and mediated by an AI data feed. (Electronic scores in the guise of folk collaboration are not new---for example the Blue Ghost Flamenco project by Luz \& Mannion\cite{noauthor_blue_nodate}.)
+  The use of AI is central to the creative focus and narrative of the work. The work's theme incorporates a machine/human relationship being explored and shared live with an audience, and this is manifested through the visuals and the sound score. The piece also explores and incorporates aspects of English folk dance and Taiwanese temple dance, both of these forms traditionally involving live musicians, and this aspect of the performance can be recontextualised as a dynamic, generative score created with electronic/software instruments and mediated by an AI data feed. (Electronic scores in the guise of folk music collaboration are not new---for example the Blue Ghost Flamenco project by Luz \& Mannion\cite{noauthor_blue_nodate}.) The sound score, mediated via AI, also gives the performers agency in a form apparent to the audience, reflecting a key performative attribute of folk performance.
 
-The desire to immerse the audience in an evolving, responsive soundscape means that there should be no pausing of sound for resets or preset changes between scenes; the soundscape should be continuously evolving, whilst able to deliver the desired sonic score or environment required for each of the multiple scenes in the dance work. The ability to crossfade between musical sections could be considered necessary, but certainly not sufficient for a continuously engaging sonic experience. In addition, at different points in the performance the score is required to respond to different parts of the AI data feed, or the same parts with different degrees of effect, and again this response pattern needs to change gradually when moving from one scene to the next, amplifying some parts of the AI data feed whilst attenuating or even discarding others.
+  The desire to fully immerse the audience in an evolving, responsive soundscape means that there should be no pausing of sound for resets or preset changes between scenes: the soundscape should be continuously evolving, whilst able to deliver the required sonic score or environment needed for each of the multiple scenes in the dance work. The ability to crossfade between musical sections could be considered necessary, but certainly not sufficient, for a continuously engaging sonic experience. In addition, at different points in the performance the score is required to respond to different parts of the AI data feed, or the same parts with different degrees of effect, and again this response pattern needs to change gradually when moving from one scene to the next, amplifying some parts of the AI data feed whilst attenuating or even discarding others.
 
-Accordingly, the configuration and behaviour of the sound score responds in time at two levels of scale: short-term, it responds to realtime AI data being generated by the performers on-stage, whilst longer term it gradually transforms between scenes and preset states. (There is no technical reason why preset changes could not be close to instantaneous---think of this preset management process as DAW automation\cite{shimazu_what_2023}---but for the purposes of the project they are most likely to be relatively slow.)
+  Accordingly, the configuration and behaviour of the sound score responds in time at two levels of scale: short-term, it responds to realtime AI data being generated by the performers on-stage, whilst longer term it gradually transforms between scenes and preset states. (There is no technical reason why preset changes could not be close to instantaneous---think of this preset management process as DAW automation\cite{shimazu_what_2023}---but for the purposes of this project they are most likely to be relatively slow.)
 
-\section{Instrumentation and Mapping}
+  \section{Instrumentation and Mapping}
 
-The sound score is realised using off-the-shelf commercial software instruments and effects hosted in a DAW. The DAW is not used as a linear recording environment: instead it is controlled by means of MIDI continuous controller messages (a set of low-resolution continuous values between 0 and 127) which are routed, or mapped, within the DAW to control different aspects of the sound score. Generally these mappings will control instrument parameters (oscillators, filters, effects depth and so on) or parameters associated with the overall mix (levels, effects sends), but can also be used to control the triggering and playback of music clips, which might be MIDI data (notes to be played by instruments) or audio (to be processed by effects). There is no note-based musical performance data coming into the DAW: all note-based playback is realised indirectly by the control of MIDI clips. (In some cases, a clip might just establish a single, indefinite drone note triggering an instrument which is then animated by parameter changes. The DAW we are using, Bitwig Studio\cite{noauthor_bitwig_nodate}, incorporates a modular environment called The Grid\cite{noauthor_grid_nodate}, which can generate MIDI note data autonomously, or in response to parameter changes.
+  The sound score is realised using off-the-shelf commercial software instruments and effects hosted in a DAW. The DAW is not used as a linear recording environment: instead it is controlled by means of MIDI continuous controller messages (a set of low-resolution continuous values between 0 and 127) which are routed and mapped within the DAW to control different aspects of the sound score. Generally these mappings will control instrument parameters (oscillators, filters, effects depth and so on) or parameters associated with the overall mix (levels, effects sends), but can also be used to control the triggering and playback of music clips, which might be MIDI data (notes to be played by instruments) or audio (to be processed by effects). There is no note-based musical performance data coming into the DAW: all note-based playback is realised indirectly by the control of MIDI clips. (In some cases, a clip might just establish a single, indefinite drone note triggering an instrument which is then animated by parameter changes. The DAW we are using, Bitwig Studio\cite{noauthor_bitwig_nodate}, incorporates a modular environment called The Grid\cite{noauthor_grid_nodate}, which can generate MIDI note data for other instruments autonomously, or in response to parameter changes.
 
-The AI system generates tracking and gestural data in the form of OSC messages, which are again continuous values, normalised as either unipolar (0.0..1.0) or bipolar (-1.0..1.0) ranges. At the very least, the mapping system needs to convert these OSC messages into MIDI, but a direct linear mapping is unlikely to be satisfactory---at the very least, values need to be scaled. There will be many more OSC inputs than MIDI destinations, requiring some routing functionality and possibly nodes which combine multiple OSC sources to affect one MIDI destination. And the entire mapping system needs to be able to transform gradually from one setup to another as scenes shift in the performance, with no perceptable discontinuities.
+  The AI system generates tracking and gestural data in the form of OSC messages, which are again continuous values, normalised as either unipolar (0.0..1.0) or bipolar (-1.0..1.0) floating-point ranges. At the very least, the mapping system needs to convert these OSC messages into MIDI, but a direct linear mapping is unlikely to be satisfactory---at the very least, values need to be scaled. There will be many more OSC sources than MIDI destinations, requiring some routing functionality and possibly nodes which combine multiple OSC sources to affect one MIDI destination. Additionally,the entire mapping system needs to be able to transform gradually from one setup to another as scenes shift in the performance, with no perceptable discontinuities. A more manual process for controlling instrument and effect parameters in the context of an audio routing matrix, using multiple MIDI control surfaces, is employed in performances by The Printer Jam\cite{noauthor_printer_nodate}.
 
-We take as inspiration the Metasurface in the composition/performance environment AudioMulch\cite{bencina_audiomulch_nodate}, which presents a two-dimensional Voronoi diagram which can be navigated by two independent normalised control values (figure \ref{fig:metasurface}). The centre point of each cell in the diagram is a preset state encompassing the parameters of all the audio devices in the project. (More correctly, a user-defined subset of the parameters is controlled.) As the selection point moves around the diagram, the parameter values morph between nearby presets, weighted according to distance. As a simple example of how such a system might work in our context, consider a low-level AI mapping that tracks the body of a performer in two horizontal directions on stage. If these two parameters are mapped to the two dimenions of a Voronoi diagram, then different areas of the stage would become associated with different soundscapes, as the sound score instrumentation would be morphed between Voronoi cell presets. (To be clear, we are envisaging more complex mapping systems than this.)
+  We take as inspiration the Metasurface in the composition/performance environment AudioMulch\cite{bencina_audiomulch_nodate}, which presents a two-dimensional Voronoi diagram which can be navigated by two independent normalised control values (figure \ref{fig:metasurface}). The centre point of each cell in the diagram is a preset state encompassing the parameters of all the audio devices in the project. (More correctly, a user-defined subset of the parameters is controlled.) As the selection point moves around the diagram, the parameter values morph between nearby presets, weighted according to distance. As a simple example of how such a system might work in our context, consider a low-level AI mapping that tracks the body of a performer in two horizontal directions on stage. If these two parameters are mapped to the two dimensions of a Voronoi diagram, then different areas of the stage would become associated with different soundscapes, as the sound score instrumentation would be morphed between Voronoi cell presets. (To be clear, we are envisaging more complex mapping systems than this.)
 
-\begin{figure}
+  \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{images/audiomulch2.png}
     \caption{The AudioMulch Metasurface in Context}
     \label{fig:metasurface}
-\end{figure}
+  \end{figure}
 
-This technique was also applied to an earlier work, Cosmoscope\cite{rothwell_3d_2025}, where a ClojureScript-based 3D animation system drove an LED lighting system inside a large metal sculpture. The preset animations were implemented as Clojure functions with parameters representing the position of an individual LED within the sculpture, and the passage of time. Each preset was positioned in the graphical ``cue plane'', while a cursor moved over it in response to automation cues (figure \ref{fig:cueplane}). Each preset function was also passed a normalised distance for its preset from the cursor, and would generally choose to interpret this as an indicator of brightness. (All active preset levels were summed prior to final rendering.) Additionally, preset functions were also passed a value representing the ``heading'' of the preset relative to the cursor, as a mechanism intended to add more visual interest to the preset changes, although this mechanism was not actually used in the final setup.
+  This navigation technique was also applied to an earlier work, Cosmoscope\cite{rothwell_3d_2025}, where a ClojureScript-based 3D animation system drove an LED lighting rig inside a large metal sculpture. The preset animations were implemented as Clojure functions with parameters representing the position of an individual LED within the sculpture, and the passage of time. Each preset was positioned in a two-dimensional graphical ``cue plane'', while a cursor moved over it in response to scene cues (figure \ref{fig:cueplane}). Each preset function was also passed a normalised distance for its preset from the cursor, and would generally choose to interpret this partly as an indicator of brightness. (All active lighting levels were summed and clipped prior to final rendering.) Additionally, preset functions were also passed a value representing the ``heading'' of the preset relative to the cursor, as a mechanism intended to add more visual interest to the preset changes, although this mechanism was not actually used in the final configuration.
 
-\begin{figure}
+  \begin{figure}
     \centering
     \includegraphics[width=0.50\linewidth]{images/cue-plane.png}
     \caption{The Cue Plane for Cosmoscope}
     \label{fig:cueplane}
-\end{figure}
+  \end{figure}
 
-We indicated earlier that we differentiate between immediate ``live'' realtime control of the sound score (via incoming AI messages) and gradual morphing between scenes in the performance. To continue the analogy with AudioMulch, live control would correspond to navigation around the Voronoi space, while scene preset control would gradually transform the Voronoi space itself. This distinction is somewhat arbitrary, but feels like a sensible design decision in an attempt to make the system's behaviour as predictable and reproducible as possible.
+  We indicated earlier that we differentiate between immediate ``live'' realtime control of the sound score (via incoming AI messages) and gradual morphing between scenes in the performance. To continue the analogy with AudioMulch, live control would correspond to navigation around the Voronoi space, while scene preset control would gradually transform the Voronoi space itself. This distinction is somewhat arbitrary, but feels like a sensible design decision in an attempt to make the system's behaviour as predictable and reproducible as possible, with clear visual feedback of its behaviour.
 
-\section{Mapping and Hosting}
+  \section{Mapping and Hosting}
 
-Our system has OSC data coming in from the AI (from a different host via LAN), and an arrangement of instruments and effects sitting in a DAW and configured for MIDI realtime control. (It is not clear at this stage whether a static studio setup of this kind is sufficiently flexible to produce the full variability needed in the sound score, or whether parts of it would need to be discretely enabled and disabled for performance reasons.) Between the AI and the DAW sits a process which controls all of the parameter mapping, value morphing and scene selection. (We are assuming here that the AI system itself is essentially stateless and tranmits all parameters all the time; again for performance reasons this might not be the case.) The mapping system is written in ClojureScript and hosted in Node.js, which itself is hosted inside Max/MSP. As well as being an appealing language for data manipulation and functional programming, ClojureScript also supports live coding via a REPL for rapid experimentation and data examination. It also has access to the full Node ecosystem, including file I/O and databases such as SQLite, allowing us to store our preset configurations. The motivation for using Max/MSP is less clear: it can receive and parse OSC, but in fact we set up an OSC listener directly in Node, for more flexibility, and to avoid incoming data coming into Max and then going across an internal Websocket link into Node itself. We use Max to generate the MIDI parameter data going to the DAW (via inter-application MIDI, as these processes are on the same machine). Again, it is quite feasible to use Node for MIDI generation as well, which makes Max's role in the system unclear (why not just run Node standalone?). There are a number of reasons:
+  Our system has OSC data coming in from the AI (from a different host via LAN), and an arrangement of instruments and effects sitting in a DAW and configured for MIDI realtime control. (It is not clear at this stage whether a static studio setup of this kind is sufficiently flexible to produce the full variability needed in the sound score, or whether parts of it would need to be discretely enabled and disabled for performance reasons.) Between the AI and the DAW sits a process which controls all of the parameter mapping, value morphing and scene selection. (We are assuming here that the AI system itself is essentially stateless and tranmits all parameters all the time; again for performance reasons this might not be the case.) The mapping system is written in ClojureScript and hosted in Node.js, which itself is hosted inside Max/MSP. As well as being an appealing language for data manipulation and functional programming, ClojureScript also supports live coding via a REPL for rapid experimentation and data examination. It also has access to the full Node ecosystem, including file I/O and databases such as SQLite, allowing us to store our preset configurations. The motivation for using Max/MSP is less clear: it can receive and parse OSC, but in fact we set up an OSC listener directly in Node, for more flexibility, and to avoid incoming data coming into Max and then going across an internal Websocket link into Node itself. We use Max to generate the MIDI parameter data going to the DAW (via inter-application MIDI, as these processes are on the same machine). Again, it is quite feasible to use Node for MIDI generation as well, which makes Max's role in the system unclear. There are a number of reasons for running Node within Max, rather than standalone:
 
-\begin{itemize}
+  \begin{itemize}
 
-\item Max is a powerful platform for rapid user interface design and implementation, allowing us to monitor and control the data mapping process
+  \item Max is a powerful platform for rapid user interface design and implementation, allowing us to monitor and control the data mapping process during development and testing
 
-\item Max is an easy-to-use environment for mocking up simple data manipulation processes, prior to implementation in ClojureScript (assuming the reimplementation step is needed)
+  \item Max is an easy-to-use environment for mocking up simple data manipulation processes, prior to implementation in ClojureScript (assuming the reimplementation step is needed)
 
-\item Max provides a suite of time-based objects (envelopes, ramp generators, metronomes) which would be difficult to implement quickly in ClojureScript
+  \item Max provides a suite of time-based objects (envelopes, ramp generators, metronomes) which would be difficult to implement quickly in ClojureScript
 
-\end{itemize}
+  \item Max excels at building graphical user interfaces quickly
 
-\noindent The downside of relying on Max for complex processing is that, viewed as a programming language, it handles complexity relatively badly. It is thus best used as a workbench for prototyping new parts of the system prior to them being ported into ClojureScript.
+  \end{itemize}
 
-\section{Presets}
+  \noindent The downside of relying on Max for complex processing is that, viewed as a programming language, it handles complexity relatively badly. (Its file format also makes it potentially difficult to source-control.) It is thus best used as a workbench for prototyping new parts of the system prior to them being ported into ClojureScript.
 
-The nascent system used in \fz{}, whilst largely implemented in ClojureScript, currently calls back into Max itself to make use of a user interface component called ``nodes''\cite{noauthor_nodes_nodate}. Like the cue plane mechanism in Cosmoscope, the nodes object provides proximity information with reference to a moving cursor. Whereas in Cosmoscope only a single proximity mapping is used (with the Cosmoscope cue plane holding multiple independent presets), in \fz{} each nodes instance is a single preset with multiple controllable parameters, which is more suited to dynamically shaping the musical component of a soundscape. (One of the parameters is likely to be overall amplitude.) The multiple nodes in the Max environment (figure \ref{fig:nodes}) correspond to multiple independent musical components in the score. Since the nodes interface is two-dimensional, each nodes instance can be attached to two normalised parameters from the motion-tracking AI system.
+  \section{Presets}
 
-\begin{figure}
+  The nascent system used in \fz{}, whilst largely implemented in ClojureScript, currently calls back into Max itself to make use of a user interface component called ``nodes''\cite{noauthor_nodes_nodate} (not to be confused with Node.js). Like the cue plane mechanism in Cosmoscope, the nodes object provides proximity information with reference to a moving cursor. Whereas in Cosmoscope only a single proximity mapping is used (with the Cosmoscope cue plane holding multiple independent presets), in \fz{} each nodes instance is a single preset with multiple controllable parameters, which is more suited to dynamically shaping a single musical element of a soundscape. (One of the parameters is likely to be overall amplitude.) The multiple nodes in the Max environment (figure \ref{fig:nodes}) correspond to multiple independent musical components in the score. Since the nodes interface is two-dimensional, each nodes instance can be attached to two normalised parameters from the motion-tracking AI system, so different nodes instances can be attached to different parts of the AI feed.
+
+  \begin{figure}
     \centering
     \includegraphics[width=1.0\linewidth]{images/nodes.jpg}
     \caption{Max/MSP Nodes for Preset Control in \fz{}}
     \label{fig:nodes}
-\end{figure}
+  \end{figure}
 
-\section{Future Plans}
+  \section{Future Plans}
 
-The next development phase for \fz{} takes place in Taiwan in August 2026, leading to a work-in-progress presentation demonstrating the software systems (AI, visuals and music). Next technical steps include:
+  The next development phase for \fz{} takes place in Taiwan in August 2026, leading to a work-in-progress presentation demonstrating the software systems (AI, visuals and music). Next technical steps include:
 
-\begin{itemize}
+  \begin{itemize}
 
-  \item Migration away from Max/MSP as an active component in the mapping machinery, by implementing the mapping in ClojureScript and using Max/MSP purely as a visualiser and interface
+  \item Migration away from Max/MSP (and nodes) as an active component in the mapping machinery, by implementing the mapping in ClojureScript and using Max/MSP purely as a visualiser and interface
 
   \item Investigating whether it is useful to have the control areas in the nodes interface be controllable in real time (by the AI) as well as the cursor---in AudioMulch and Cosmoscope the ``terrain'' is completely static---or whether this literally introduces too many moving parts
 
@@ -117,7 +123,11 @@ The next development phase for \fz{} takes place in Taiwan in August 2026, leadi
 
   \item Implementing a data storage and retrieval system which supports gradual transition between scenes in the piece, where each scene establishes the layout of control areas and the mapping from AI to cursor
 
-\end{itemize}
+  \end{itemize}
+
+  \section{Conclusions}
+
+
 
 \end{CJK*}
 
